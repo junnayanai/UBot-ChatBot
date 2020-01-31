@@ -1,0 +1,539 @@
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.List;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class chatbot {
+	public static ArrayList<Item> grocery = new ArrayList<Item>();
+	public static ArrayList<Item> restaurant = new ArrayList<Item>();
+	public static ArrayList<Item>leisure = new ArrayList<Item>();
+	public static ArrayList<Item> transportation = new ArrayList<Item>();
+	public static ArrayList<Item> education = new ArrayList<Item>();
+	public static ArrayList<Item> fashionandbeauty = new ArrayList<Item>();
+	public static ArrayList<Item> health = new ArrayList<Item>();
+	public static ArrayList<Item> necessities = new ArrayList<Item>();
+	public static ArrayList<Item> others = new ArrayList<Item>();
+	public static ArrayList<ArrayList> list= new ArrayList<ArrayList>();
+	public static Color[] colors ={Color.green, Color.magenta,Color.yellow,Color.blue,Color.orange, Color.pink, Color.red, Color.gray, Color.white};
+	private String intro = "";
+	private String message = "";
+	private String message2 = "";
+	public String Name ="";
+	public JTextField textbox = new JTextField(20);
+	public String[] categorynames = {"grocery", "restaurant", "leisure", "transportation", "education", "fashionandbeauty", "health", "necessities", "others"};
+	private Image backgroud;
+	private Image pic;
+	public JTextField name = new JTextField(20);
+	public JButton begin = new JButton("Next");
+	public JButton Send = new JButton("Send");
+	public JButton goback = new JButton("Go Back");
+	public JButton g = new JButton("Groceries");
+	public JButton r = new JButton("Restaurant");
+	public JButton l = new JButton("Leisure");
+	public JButton t = new JButton("Transport");
+	public JButton e = new JButton("Education");
+	public JButton b = new JButton("Beauty");
+	public JButton h = new JButton("Health");
+	public JButton n = new JButton("Necessities");
+	public JButton o = new JButton("Other");
+	public String introduction ="";
+	public String question1 = "Which category would you like to input?";
+	public boolean cateQ = true;
+	public String question2 = "What is the name of the item you bought?";
+	public boolean itemQ = false;
+	public String question3 = "How much was the item?";
+	public boolean priceQ = false;
+	public String success = "Data successfully stored; text 'show' to show monthly expense, 'reset' to clear data, and 'new' to input more data";
+ 
+	public boolean stored = false;
+	public ArrayList<String> enteredtext = new ArrayList<String>();
+	public boolean entered = false;
+	public boolean show = false;
+    public PieChart piechart;
+	
+	protected  Image getImage(String fn) {
+		Image img = null;
+		try {
+			
+			img = ImageIO.read(this.getClass().getResource(fn));
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return img;
+	}
+	public static void main(String[] args) {
+		list.add(grocery);
+		list.add(restaurant);
+		list.add(leisure);
+		list.add(transportation);
+		list.add(education);
+		list.add(fashionandbeauty);
+		list.add(health);
+		list.add(necessities);
+		list.add(others);
+		new chatbot().start();
+	}
+
+	private void start() {
+		backgroud=getImage("background.png");
+		textbox.setBounds(0, 500, 600, 20);
+		textbox.setVisible(true);
+		pic = getImage("UBot.png");
+		introduction = "Welcome to UBot. Enter your name below";
+		name.setBounds(350, 430, 200, 30);
+		name.setVisible(true);
+		JFrame frame = new JFrame("ChatBot");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		begin.setVisible(true);
+		begin.setBounds(430, 470, 50, 20);
+		JPanel panel = new JPanel() {
+			@Override
+			public void paintComponent(Graphics g) {	
+				super.paintComponents(g);
+				g.drawImage(pic,0,0,900,600,null);
+				g.setColor(Color.white);
+				g.drawString(introduction, 320, 400);
+			}
+		};
+		panel.add(name);
+		panel.add(begin);
+		panel.setPreferredSize(new Dimension(900,600));
+		frame.setResizable(false);
+		panel.setVisible(true);
+		panel.setLayout(null);
+		frame.add(panel);
+		frame.pack();
+		frame.setVisible(true);
+		JFrame frame2 = new JFrame("ChatBot");
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JFrame frame3 = new JFrame("chart");
+		frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		goback.setVisible(true);
+	    goback.setBounds(650, 500, 70, 20);
+	    JPanel chart = new JPanel() {
+			@Override
+			public void paintComponent(Graphics g) {	
+				super.paintComponents(g);
+				g.setColor(Color.gray);
+				Rectangle rect= new Rectangle(0,50,400,400);
+	    	    drawPie((Graphics2D) g, rect);
+
+			}
+			private void drawPie(Graphics2D g, Rectangle area) {
+					int total = 0, gsum =0, rsum = 0, lsum = 0, tsum=0, esum = 0,bsum = 0,hsum = 0,nsum = 0,osum = 0;
+					for(int i=0; i<grocery.size(); i++) {
+						gsum += grocery.get(i).getPrice();
+					}
+					total += gsum;
+					for(int i=0; i<restaurant.size(); i++) {
+						rsum += restaurant.get(i).getPrice();
+					}
+					total += rsum;
+					for(int i=0; i<leisure.size(); i++) {
+						lsum += leisure.get(i).getPrice();
+					}
+					total += lsum;
+					for(int i=0; i<transportation.size(); i++) {
+						tsum += transportation.get(i).getPrice();
+					}
+					total += tsum;
+					for(int i=0; i<education.size(); i++) {
+						esum += education.get(i).getPrice();
+					}
+					total += esum;
+					for(int i=0; i<fashionandbeauty.size(); i++) {
+						bsum += fashionandbeauty.get(i).getPrice();
+					}
+					total += bsum;
+					for(int i=0; i<health.size(); i++) {
+						hsum += health.get(i).getPrice();
+					}
+					total += hsum;
+					for(int i=0; i<necessities.size(); i++) {
+						nsum += necessities.get(i).getPrice();
+					}
+					total += nsum;
+					for(int i=0; i<others.size(); i++) {
+						osum += others.get(i).getPrice();
+					}
+					total += osum;
+					int[] sums = {gsum, rsum, lsum, tsum, esum, bsum, hsum, nsum, osum};   
+			    	      double curValue = 0.0D;
+			    	      int startAngle = 0;
+			    	      for (int i = 0; i < 9; i++) {
+			    	         startAngle = (int) (curValue * 360 /total);
+			    	         int arcAngle = (int) (sums[i] * 360 / total);
+			    	         g.setColor(colors[i]);
+			    	         g.fillArc(area.x, area.y, area.width, area.height, startAngle, arcAngle);
+			    	         curValue +=sums[i];
+			    	      }
+			    	      g.setColor(Color.green);
+			    	      g.drawString("Groceries: " + gsum +" spent (" + (int)(((double)gsum/total)*100) + "%)", 420, 200);
+			    	      g.setColor(Color.magenta);
+			    	      g.drawString("Restaurant: "+ rsum + " spent (" + (int)(((double)rsum/total)*100)+ "%)", 420, 220);
+			    	      g.setColor(Color.yellow);
+			    	      g.drawString("Leisure: " + lsum + " spent (" + (int)(((double) lsum/total)*100) + "%)", 420, 240);
+			    	      g.setColor(Color.blue);
+			    	      g.drawString("Transportation: " + tsum + " spent (" +(int)(((double) tsum/total)*100) + "%)", 420, 260);
+			    	      g.setColor(Color.orange);
+			    	      g.drawString("Education: " + esum + " spent (" +(int)(((double) esum/total)*100) + "%)", 420, 280);
+			    	      g.setColor(Color.pink);
+			    	      g.drawString("Beauty: " + bsum + " spent (" +(int)(((double) bsum/total)*100) + "%)", 420, 300); 
+			    	      g.setColor(Color.red);
+			    	      g.drawString("Health: " + hsum + " spent (" +(int)(((double) hsum/total)*100) + "%)", 420, 320);
+			    	      g.setColor(Color.gray);
+			    	      g.drawString("Necessities: " + nsum + " spent (" +(int)(((double) nsum/total)*100) + "%)", 420, 340);
+			    	      g.setColor(Color.white);
+			    	      g.drawString("Other: " + osum + " spent (" +(int)(((double) osum/total)*100) + "%)", 420, 360);
+			    	      				
+			}
+	    };		
+	    chart.add(goback); 
+	    chart.setPreferredSize(new Dimension(900,600));
+	    frame3.setPreferredSize(new Dimension(900,600));
+		frame3.setResizable(true);
+		chart.setVisible(false);
+		chart.setLayout(null);
+		frame3.add(chart);
+		frame3.pack();
+		frame3.setVisible(false);
+	    frame3.add(chart);
+	    goback.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chart.setVisible(false);
+				frame3.setVisible(false);
+				show = false;
+			}
+		});		
+	    JPanel panel2 = new JPanel() {
+			@Override
+			public void paintComponent(Graphics g) {	
+				super.paintComponents(g);
+				g.setColor(Color.black);
+				Name = name.getText();
+				message = "Text 'show' to get a chart of total monthly expenses and 'reset' to clear data";
+				intro = "Hello " + Name;
+				g.drawImage(backgroud,0,0,900,600,null);
+				g.setColor(Color.WHITE);
+				g.drawString(intro,20,20);
+				g.drawString(question1, 20, 60);
+				g.drawString(message, 20, 40);
+				
+//				if(cateQ==true) {
+//					enteredtext.add(question1);
+////					itemQ=true;
+//				}
+				
+				if(show){
+					chart.setVisible(true);
+					frame3.setVisible(true);
+					chart.repaint();					
+				}
+						
+			    	
+				if(entered) {
+//						g.drawString("hello", 800, 100);
+					int a = 0;
+						for(int i = 0; i<enteredtext.size(); i++) {
+//							if(i ==0) {
+//								g.setColor(Color.white);
+//							}
+							if(i%2 ==0) {
+								a++;
+								g.setColor(Color.white);
+								g.drawString(enteredtext.get(i),800-enteredtext.get(i).length(), 80+(a*20));		
+								}
+						else {
+							a++;
+							g.setColor(Color.white);
+							g.drawString(enteredtext.get(i),0, 100+(a*20));				
+						}
+							if(a == 20) {
+								a =0;
+								g.drawImage(backgroud,0,0,900,600,null);
+								g.drawString(intro,20,20);
+								g.drawString(message,20,40);
+								g.drawString(enteredtext.get(i), 0, 60);
+							}
+						}
+						if(enteredtext.get(enteredtext.size()-1).equals(question1)) {
+							cateQ =true;
+						}
+						if(enteredtext.get(enteredtext.size()-1).equals(question2)) {
+							itemQ = true;
+						}
+						if(enteredtext.get(enteredtext.size()-1).equals(question3)) {
+							priceQ = true;
+						}
+				}
+
+			}
+		};
+		panel2.add(textbox);
+		panel2.add(Send);
+		panel2.add(g);
+		panel2.add(r);
+		panel2.add(l);
+		panel2.add(t);
+		panel2.add(e);
+		panel2.add(b);
+		panel2.add(h);
+		panel2.add(n);
+		panel2.add(o);
+		Send.setVisible(true);
+		Send.setBounds(650, 500, 40, 20);
+		g.setBounds(0,530, 80,20);
+		g.setForeground(Color.green);
+		r.setBounds(100,530, 80,20);
+		r.setForeground(Color.magenta);
+		l.setBounds(200,530, 80,20);
+		l.setForeground(Color.yellow);
+		t.setBounds(300,530, 80,20);
+		t.setForeground(Color.blue);
+		e.setBounds(400, 530, 80, 20);
+		e.setForeground(Color.orange);
+		b.setBounds(500,530, 80,20);
+		g.setForeground(Color.pink);
+		h.setBounds(600,530, 80,20);
+		h.setForeground(Color.red);
+		n.setBounds(700,530, 80,20);
+		n.setForeground(Color.gray);
+		o.setBounds(800,530, 80,20);
+		o.setBackground(Color.BLACK);
+		o.setForeground(Color.white);
+		g.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("grocery");
+			}
+		});
+		r.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("restaurant");
+			}
+		});
+		l.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("leisure");
+			}
+		});
+		t.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("transportation");
+			}
+		});
+		e.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("education");
+			}
+		});
+		h.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("health");
+			}
+		});
+		n.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("necessities");
+			}
+		});
+		b.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("beauty");
+			}
+		});
+		o.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textbox.setText("other");
+			}
+		});
+		panel2.setPreferredSize(new Dimension(900,600));
+		frame2.setResizable(true);
+		panel2.setVisible(true);
+		panel2.setLayout(null);
+		frame2.add(panel2);
+		frame2.pack();
+		frame2.setVisible(false);
+		System.out.print(enteredtext.size());
+		Send.addActionListener(new ActionListener() {
+			int index = 0;
+			String item = "";
+			int price;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				entered = true;
+				if(textbox.getText().equals("reset")) {
+					enteredtext.clear();
+					stored = false;
+					cateQ = false;
+					itemQ = false;
+					priceQ = false;				
+					entered = false;
+					show = false;
+					for(int i =0; i < 9; i ++) {
+						list.get(i).clear();
+					}
+				}
+				if(cateQ){
+					index = searchcategory();
+					enteredtext.add(textbox.getText());
+					enteredtext.add(question2);
+					cateQ = false;
+				}
+				else if(itemQ) {
+					item = textbox.getText();
+					enteredtext.add(textbox.getText());
+					enteredtext.add(question3);
+					itemQ=false;
+				}
+				else if(priceQ) {
+					price = Integer.parseInt(textbox.getText());
+					enteredtext.add(textbox.getText());
+					enteredtext.add(success);
+					priceQ = false;
+					Item thing = new Item(index,item,price);
+					list.get(index).add(thing);
+				}
+				else if(textbox.getText().equals("show")) {
+					show();
+					enteredtext.add("show");
+					enteredtext.add(" " );
+					textbox.setText("");
+					stored = false;
+					cateQ = false;
+					itemQ = false;
+					priceQ = false;
+				}
+				else if(textbox.getText().equals("new")) {
+					enteredtext.add("new");
+					enteredtext.add(question1);
+					cateQ = true;
+					itemQ = false;
+					priceQ = false;
+					
+				}
+				textbox.setText("");
+				panel2.repaint();
+			}
+		    private void show() {
+		    	show=true;
+				panel2.repaint();
+			}
+		    
+			public void actionPerformed1(ActionEvent e) {
+//		    	if(textbox.getText().equals("show total spent")) {
+//		    		showtotalspent();
+//		    	}
+//
+//		    	int index = searchcategory();
+//		    	String item = getItem();
+//		    	int price = getPrice(item);
+//		    	list.get(index).add(item);
+//		    	list.get(index).add(price);
+//		    	enteredtext.add(textbox.getText());
+//				textbox.setText("");
+//				entered = true;
+//				panel2.repaint();
+//		    	
+		    }
+//			private Integer getPrice() {
+//				String entered = textbox.getText().substring(2);
+//				String precio =entered.replaceAll("\\D+","");
+////				String precio = entered.substring(stringplace+1);				
+//				int price = Integer.parseInt(precio);
+//				return price;
+//			}
+//			private String getBoughtItem(Integer price) {
+//				int stringplace = 0;
+//				String entered = textbox.getText().substring(2);
+//				String item = "";
+//				String p = price.toString();
+//				stringplace = entered.indexOf(p); 
+//				item = entered.substring(0,stringplace-1);
+//				return item;
+//			}
+			private int searchcategory() {				
+					if(textbox.getText().equals("grocery")) {
+						return 0;
+					}
+					if(textbox.getText().equals("restaurant")) {
+						return 1;
+					}
+					if(textbox.getText().equals("leisure")) {
+						return 2;
+					}
+					if(textbox.getText().equals("transportation")) {
+						return 3;
+					}
+					if(textbox.getText().equals("education")) {
+						return 4;
+					}
+					if(textbox.getText().equals("beauty")) {
+						return 5;
+					}
+					if(textbox.getText().equals("health")) {
+						return 6;
+					}
+					if(textbox.getText().equals("necessities")) {
+						return 7;
+					}
+					if(textbox.getText().equals("other")) {
+						return 8;
+					}
+				return 10;
+			}
+			
+		});
+		begin.addActionListener(new ActionListener() {
+
+		    public void actionPerformed(ActionEvent e) {
+		    	panel.setVisible(true);
+				frame2.setVisible(true);
+				frame.setVisible(false);
+				panel2.repaint();
+				
+		    }
+	
+
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+		});
+		
+		
+		
+	}
+
+		
+	}
+	}
+	
